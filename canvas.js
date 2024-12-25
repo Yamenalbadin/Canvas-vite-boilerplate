@@ -1,5 +1,8 @@
 import { randomIntFromRange, randomColor, distance } from './utils'
 
+const canvas = document.querySelector('canvas')
+const c = canvas.getContext('2d')
+
 const dpr = 2
 let canvasWidth = 0
 let canvasHeight = 0
@@ -26,6 +29,7 @@ addEventListener('mousemove', (event) => {
 addEventListener('resize', () => {
   setCanvasDimensions()
   init()
+  drawText()
 })
 
 // Objects
@@ -50,8 +54,28 @@ class Object {
   }
 }
 
-const canvas = document.querySelector('canvas')
-const c = canvas.getContext('2d')
+class textObject {
+  constructor(x, y, text, color) {
+    this.x = x
+    this.y = y
+    this.text = text
+    this.color = color
+  }
+  drawText (size) {
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = this.color;
+    c.fillRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = 'white';
+    c.font = size + 'px Helvetica';
+    c.textBaseline = 'middle';
+    c.textAlign = 'center';
+    c.fillText(this.text, this.x, this.y);
+  };
+
+}
+
+const Text = new textObject(canvas.width/2/dpr, canvas.height/2/dpr, "test", colors[3])
+Text.drawText(500)
 
 const setCanvasDimensions = () => {
   canvasWidth = innerWidth
@@ -117,12 +141,6 @@ const handleMouseMove = (e) => {
   const rect = canvas.getBoundingClientRect()
   const x = e.clientX - rect.left
   const y = e.clientY - rect.top
-  magPosition.x = x
-  magPosition.y = y
-  drawText(12)
-  if(x > magnificationRadius && y > magnificationRadius && x < rect.width - magnificationRadius && y < rect.height - magnificationRadius){
-    magnifyText(x, y)
-  }
 }
 
 // Animation Loop
